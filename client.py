@@ -5,8 +5,11 @@ import threading
 nickname = input("Choose your nickname: ")
 
 # Connecting To Server
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect(('91.220.109.253', 55555))
+def connetction (ip):                                           #Перевел в метод 
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((ip, 55555))
+    return s
+# client.connect(('127.0.0.1', 55555))
 
 # Listening to Server and Sending Nickname
 def receive():
@@ -14,9 +17,9 @@ def receive():
         try:
             # Receive Message From Server
             # If 'NICK' Send Nickname
-            message = client.recv(1024).decode('ascii')
+            message = client.recv(1024).decode('utf-8')     #Изменил на UTF-8
             if message == 'NICK':
-                client.send(nickname.encode('ascii'))
+                client.send(nickname.encode('utf-8'))
             else:
                 print(message)
         except:
@@ -27,8 +30,16 @@ def receive():
 
 def write():
     while True:
-        message = '{}: {}'.format(nickname, input(''))
-        client.send(message.encode('ascii'))
+
+        message = input()               
+        if message == 'exit':           # Выход из чата
+            client.close()                      
+        else:        
+            message = f'{nickname}: {message}'  #Изменил на f строку
+            client.send(message.encode('utf-8'))
+
+
+client = connetction('127.0.0.1')
 
 # Starting Threads For Listening And Writing
 receive_thread = threading.Thread(target=receive)

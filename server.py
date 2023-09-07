@@ -3,7 +3,7 @@ import socket
 import threading
 
 # Connection Data
-host = '91.220.109.253'
+host = '127.0.0.1'
 port = 55555
 
 # Starting Server
@@ -14,6 +14,7 @@ server.listen()
 # Lists For Clients and Their Nicknames
 clients = []
 nicknames = []
+
 
 # Sending Messages To All Connected Clients
 def broadcast(message):
@@ -33,7 +34,7 @@ def handle(client):
             clients.remove(client)
             client.close()
             nickname = nicknames[index]
-            broadcast('{} left!'.format(nickname).encode('ascii'))
+            broadcast('{} left!'.format(nickname).encode('utf-8'))
             nicknames.remove(nickname)
             break
 
@@ -45,15 +46,15 @@ def receive():
         print("Connected with {}".format(str(address)))
 
         # Request And Store Nickname
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send('NICK'.encode('utf-8'))
+        nickname = client.recv(1024).decode('utf-8')
         nicknames.append(nickname)
         clients.append(client)
 
         # Print And Broadcast Nickname
-        print("Nickname is {}".format(nickname))
-        broadcast("{} joined!".format(nickname).encode('ascii'))
-        client.send('Connected to server!'.encode('ascii'))
+        print(f"Nickname is {nickname}")
+        broadcast("{} joined!".format(nickname).encode('utf-8'))
+        client.send('Connected to server!'.encode('utf-8'))
 
         # Start Handling Thread For Client
         thread = threading.Thread(target=handle, args=(client,))
