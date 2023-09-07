@@ -39,7 +39,7 @@ def write():
             client.send(message.encode('utf-8'))
 
 
-client = connetction('91.220.109.253')
+client = connetction('127.0.0.1')
 
 # Starting Threads For Listening And Writing
 receive_thread = threading.Thread(target=receive)
